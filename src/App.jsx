@@ -1,8 +1,7 @@
 import "./App.css";
+import { NextUIProvider } from "@nextui-org/react";
 
 import { Editor } from "./components/Editor";
-
-import { NextUIProvider } from "@nextui-org/react";
 
 function App() {
   return (
