@@ -15,5 +15,5 @@
       "expected_output": "0"
     }
   ],
-  "code": "initial code that is shown to user here"
+  "code": "# write code here\ndef sum_array(arr):\n  pass\n\nif __name__ == \"__main__\":\n  for _ in range(int(input())):\n    str_arr = input().split()\n    int_arr = [int(num) for num in str_arr]\n    print(sum_array(int_arr))"
 }
