@@ -1,0 +1,19 @@
+{
+  "title": "Sum of array",
+  "description": "Add the elements in the array and output the value.",
+  "test_cases": [
+    {
+      "input": "1 2 3",
+      "expected_output": "6"
+    },
+    {
+      "input": "-5",
+      "expected_output": "-5"
+    },
+    {
+      "input": "",
+      "expected_output": "0"
+    }
+  ],
+  "code": "initial code that is shown to user here"
+}
