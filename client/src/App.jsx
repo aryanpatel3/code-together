@@ -6,8 +6,8 @@ import {
   RouterProvider,
 } from "react-router-dom";
 import { ChakraProvider } from "@chakra-ui/react";
-import chakraTheme from "@chakra-ui/theme";
-import { Problem } from "./components/Problem";
+import theme from "./theme";
+import { Problem } from "./components/problem/Problem";
 
 function App() {
   const router = createBrowserRouter(
@@ -19,7 +19,7 @@ function App() {
     )
   );
   return (
-    <ChakraProvider theme={chakraTheme}>
+    <ChakraProvider theme={theme}>
       <RouterProvider router={router} />
     </ChakraProvider>
   );
