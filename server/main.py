@@ -31,22 +31,33 @@ async def read_root():
 
 class RequestBody(BaseModel):
     code: str
+    problem_id: int
 
 
-@app.get("/problem")
-async def get_problem():
-    with open('sum_array.json', 'r') as f:
-        problem = json.load(f)
+@app.get("/problems")
+async def get_problems():
+    with open('problems.json', 'r') as f:
+        problems = json.load(f)
 
-    return problem
+    return problems
+
+
+@app.get("/problems/{problem_id}")
+async def get_problem(problem_id: int):
+    problems = await get_problems()
+    num_problems = len(problems["problems"])
+
+    if problem_id <= 0 or problem_id > num_problems:
+        return {"error": "Problem not found"}
+
+    return problems["problems"][problem_id - 1]
 
 
 @app.post("/code")
 async def run_code(request: RequestBody):
     client = PystonClient()
 
-    with open('sum_array.json', 'r') as f:
-        problem = json.load(f)
+    problem = await get_problem(request.problem_id)
 
     test_cases = problem['test_cases']
 
