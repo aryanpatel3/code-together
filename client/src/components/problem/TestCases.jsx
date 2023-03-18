@@ -4,7 +4,7 @@ export function TestCases({ handleRunClick, results, testCases }) {
   return (
     <Box p={4}>
       <HStack alignItems={"flex-start"}>
-        {testCases.map((testCase, i) => {
+        {testCases?.map((testCase, i) => {
           return (
             <Box key={i} p={2}>
               <Text fontSize={"lg"} fontWeight={"bold"}>

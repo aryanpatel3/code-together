@@ -8,13 +8,14 @@ import {
 import { ChakraProvider } from "@chakra-ui/react";
 import theme from "./theme";
 import { Problem } from "./components/problem/Problem";
+import { HomePage } from "./components/home/HomePage";
 
 function App() {
   const router = createBrowserRouter(
     createRoutesFromElements(
       <>
-        <Route path="/" element={<div>This is the home page!</div>} />
-        <Route path="problems/1" element={<Problem />} />
+        <Route path="/" element={<HomePage />} />
+        <Route path="problems/:id" element={<Problem />} />
       </>
     )
   );
