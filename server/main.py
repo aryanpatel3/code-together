@@ -1,7 +1,7 @@
+#!/usr/bin/env python3
 import json
 import uvicorn
-
-from pprint import pprint
+import secrets
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
@@ -53,6 +53,15 @@ async def get_problem(problem_id: int):
     return problems["problems"][problem_id - 1]
 
 
+def create_input(problem):
+    test_cases = problem['test_cases']
+
+    stdin = str(len(test_cases)) + "\n"
+    for test_case in test_cases:
+        stdin += test_case['input'] + "\n"
+
+    return stdin
+
 @app.post("/code")
 async def run_code(request: RequestBody):
     client = PystonClient()
@@ -60,13 +69,19 @@ async def run_code(request: RequestBody):
     problem = await get_problem(request.problem_id)
 
     test_cases = problem['test_cases']
+    stdin = create_input(problem)
 
-    stdin = str(len(test_cases)) + "\n"
-    for i in range(len(test_cases)):
-        stdin += test_cases[i]['input'] + "\n"
-    print("stdin:", stdin)
+    secret_hash = secrets.token_hex(32)
 
-    output = await client.execute("python", [File(request.code)], stdin=stdin)
+    with open(problem['execution_code_path'], 'r') as f:
+        execution_code = f.read().replace("{STDOUT_PREFIX}", secret_hash)
+
+    full_code = request.code + "\n\n" + execution_code
+
+    output = await client.execute("python", [File(full_code)], stdin=stdin)
+
+    if output.run_stage is None:
+        return {"results": "Runtime Error"}
 
     if output.run_stage.code != 0:
         return {"results": "Runtime Error"}
@@ -74,19 +89,20 @@ async def run_code(request: RequestBody):
     if output.run_stage.signal == "SIGKILL":
         return {"results": "Time Limit Exceeded"}
 
-    pprint(output.run_stage.__dict__)
+    user_responses = [
+        line.removeprefix(secret_hash + " ")
+        for line in output.run_stage.output.split("\n")
+        if line.startswith(secret_hash)
+    ]
 
-    results = []
-    stdout = output.run_stage.output.split("\n")
-    stdout.pop()
-    print("stdout:", stdout)
-    print("test_cases:", test_cases)
-
-    for i in range(len(stdout)):
-        results.append(stdout[i] == test_cases[i]['expected_output'])
-
-    for i in range(len(test_cases) - len(stdout)):
-        results.append(False)
+    results = [
+        test_case['expected_output'] == user_response
+        for test_case, user_response in zip(
+            test_cases,
+            user_responses,
+            strict=True,
+        )
+    ]
 
     return {"results": results}
 
