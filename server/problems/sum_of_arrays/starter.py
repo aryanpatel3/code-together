@@ -1,3 +1,3 @@
 # write code here
-def sum_array(arr):
+def solution(arr):
   pass
