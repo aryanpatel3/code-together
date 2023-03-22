@@ -22,11 +22,10 @@ app.add_middleware(
 app.include_router(problems_router)
 app.include_router(submissions_router)
 
+
 @app.get("/")
 async def read_root():
     return {"Hello": "World"}
-
-
 
 
 if __name__ == "__main__":
