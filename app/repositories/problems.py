@@ -1,5 +1,5 @@
 import json
-from typing import Any
+from typing import Any, Optional
 
 from config import PROBLEMS_PATH
 
@@ -9,7 +9,7 @@ def fetch_all() -> list[dict[str, Any]]:
 
     return problems
 
-def fetch_one(problem_id: int) -> dict[str, Any] | None:
+def fetch_one(problem_id: int) -> Optional[dict[str, Any]]:
     with open(PROBLEMS_PATH, 'r') as f:
         problems = json.load(f)
 

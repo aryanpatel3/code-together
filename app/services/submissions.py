@@ -1,5 +1,5 @@
 import secrets
-from typing import Any
+from typing import Any, Union
 
 from pyston import PystonClient, File
 
@@ -8,7 +8,7 @@ from repositories import problems
 from utils import create_input
 
 
-async def execute_code(code: str, problem_id: int) -> dict[str, Any] | Error:
+async def execute_code(code: str, problem_id: int) -> Union[dict[str, Any], Error]:
     client = PystonClient()
 
     problem = problems.fetch_one(problem_id)
