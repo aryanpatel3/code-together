@@ -2,14 +2,19 @@ import secrets
 
 from pyston import PystonClient, File
 
+from schemas.errors import ProblemError
+from schemas.responses import Results
 from services.problems import get_problem
 from utils import create_input
 
 
-async def execute_code(code, problem_id):
+async def execute_code(code, problem_id) -> Results:
     client = PystonClient()
 
     problem = get_problem(problem_id)
+
+    if type(problem) is ProblemError:
+        return Results(results="Problem not found")
 
     test_cases = problem['test_cases']
     stdin = create_input(problem)
@@ -24,13 +29,13 @@ async def execute_code(code, problem_id):
     output = await client.execute("python", [File(full_code)], stdin=stdin)
 
     if output.run_stage is None:
-        return {"results": "Runtime Error"}
+        return Results(results="Runtime Error")
 
     if output.run_stage.code != 0:
-        return {"results": "Runtime Error"}
+        return Results(results="Runtime Error")
 
     if output.run_stage.signal == "SIGKILL":
-        return {"results": "Time Limit Exceeded"}
+        return Results(results="Time Limit Exceeded")
 
     user_responses = [
         line.removeprefix(secret_hash + " ")
@@ -39,7 +44,7 @@ async def execute_code(code, problem_id):
     ]
 
     if len(user_responses) != len(test_cases):
-        return {"results": "Runtime Error"}
+        return Results(results="Runtime Error")
 
     results = [
         test_case['expected_output'] == user_response
@@ -49,4 +54,4 @@ async def execute_code(code, problem_id):
         )
     ]
 
-    return {"results": results}
+    return Results(results=results)
