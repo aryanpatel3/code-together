@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
-from services import problems
 from errors import Error
+from services import problems
 
 router = APIRouter(
     prefix="/problems",
@@ -15,6 +15,7 @@ async def fetch_all():
         return {"status": "error", "message": data}
 
     return {"status": "success", "data": data}
+
 
 @router.get("/{problem_id}")
 async def problem(problem_id: int):
