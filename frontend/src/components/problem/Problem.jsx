@@ -22,7 +22,7 @@ export function Problem() {
     axios
       .get(`http://localhost:8000/problems/${id}`)
       .then((res) => {
-        setData(res.data);
+        setData(res.data.data);
         setIsLoading(false);
       })
       .catch((err) => {

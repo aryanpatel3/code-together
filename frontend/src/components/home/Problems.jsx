@@ -4,15 +4,19 @@ import axios from "axios";
 import { Link as ReachLink } from "react-router-dom";
 
 export function Problems() {
+  const [error, setError] = useState(false);
   const [problems, setProblems] = useState([]);
 
   useEffect(() => {
     axios.get("http://localhost:8000/problems").then((res) => {
-      setProblems(res.data.problems);
-    });
+      if (res.data.data.problems) {
+        setProblems(res.data.data.problems);
+      } else {
+        setError(true);
+      }
+    }).catch(() => setError(true));
   });
 
-  console.log("problems", problems);
 
   return (
     <Box py={8}>
@@ -21,6 +25,14 @@ export function Problems() {
           Problems
         </Text>
       </Center>
+      <Center mt={4}>
+        {error && (
+          <Text fontSize={"xl"} color={"red.500"}>
+            An error occurred. Please try again later.
+          </Text>
+        )}
+      </Center>
+
       <VStack spacing={4} alignItems={"flex-start"}>
         {problems.map((problem, i) => {
           return (

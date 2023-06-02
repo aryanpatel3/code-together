@@ -6,7 +6,7 @@ import { useCallback, useState } from "react";
 
 export function RightSide({ data, id }) {
   const [results, setResults] = useState([]);
-  const [code, setCode] = useState(data.code);
+  const [code, setCode] = useState(data.starter_code);
   const { test_cases: testCases } = data;
 
   const onCodeChange = useCallback((value) => {
@@ -14,12 +14,11 @@ export function RightSide({ data, id }) {
   }, []);
 
   const handleRunClick = async () => {
-    const res = await axios.post("http://localhost:8000/code", {
+    const res = await axios.post("http://localhost:8000/submissions", {
       code: code,
       problem_id: id,
     });
     setResults(res.data.results);
-    console.log(results);
   };
 
   return (
