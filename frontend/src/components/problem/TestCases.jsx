@@ -12,7 +12,7 @@ export function TestCases({ handleRunClick, results, testCases }) {
               </Text>
               <Text>Input: "{testCase.input}"</Text>
               <Text>Expected Output: "{testCase.expected_output}"</Text>
-              <Text>Result: {results[i] === true ? "passed" : "fail"}</Text>
+              <Text color={results[i] && "green.500"}>Result: {results[i] === true ? "passed" : "fail"}</Text>
             </Box>
           );
         })}
